@@ -6,8 +6,7 @@ def greatest_root(a, b, c):
 		if b == 0:
 			return 0 if c == 0 else None
 		else:
-			return -c/b
-		return -c / b
+			return -c / b
 	elif delta < 0:
 		return None
 	else:

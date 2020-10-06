@@ -5,7 +5,6 @@ def isqrt_builtin(n):
 
 def test(f):
 	for n in range(100):
-		print(isqrt_builtin(n))
 		assert f(n) == isqrt_builtin(n)
 
 def isqrt_hard(n):
@@ -18,12 +17,12 @@ test(isqrt_hard)
 
 def isqrt_sum(n):
 	s = 0
-	if n < 1:
-		return 0
-	for k in range(1, n):
-		s = s + (k+k-1)
+	if n <= 1:
+		return 0 if n == 0 else 1
+	for k in range(1, n + 1):
+		s = s + (k + k - 1)
 		# Sn is now equals k ** 2
-		if s - 1 >= n:
+		if s > n:
 			return k - 1
 
 test(isqrt_sum)
@@ -31,15 +30,13 @@ test(isqrt_sum)
 def isqrt_dicho(n):
 	L = 0
 	R = n
-	while L <= R:
-		m = floor((L+R)/2)
-		if m ** 2 < n:
-			L = m+1
-		elif m ** 2 > n:
-			R = m-1
+	while L != R:
+		m = (L+R) // 2 + 1
+		if m ** 2 <= n:
+			L = m
 		else:
-			return m
-	return R
+			R = m - 1
+	return L
 
 test(isqrt_dicho)
 
