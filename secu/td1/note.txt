@@ -1,0 +1,11 @@
+gdb commands:
+list: show source code
+pattern_create 400 in.txt: create 400 random char
+run $(cat in.txt)
+run $(python -c 'print "A"*400)')
+set disassembly-flavor intel
+disass main
+x/1gx: display 1 time as hex 8 bytes
+x/1wx: display 1 time as hex 4 byte
+x/1bx: display 1 time as hex 1 byte
+x/s: display as string
