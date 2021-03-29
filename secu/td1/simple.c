@@ -6,6 +6,7 @@ int main(int argc, char* argv[])
     char buffer[64];
     strcpy(buffer, argv[1]);
     printf("%s\n", buffer);
+    printf("%p\n", buffer);
     return 0;
 }
 
