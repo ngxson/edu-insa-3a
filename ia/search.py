@@ -87,7 +87,32 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    directions = []
+    start_state = problem.getStartState()
+    visited = {}
+
+    def dfs_recursive(directions, state):
+        # stop if the goal is reached
+        if problem.isGoalState(state): return True
+        # mark that we have visted this place
+        visited[state] = True
+        # work with child nodes
+        successors = problem.getSuccessors(state)
+        for s in successors:
+            new_state, direction, cost = s
+            if new_state in visited: continue
+            # remember the direction
+            directions.append(direction)
+            # recursive call
+            res = dfs_recursive(directions, new_state)
+            # good way, end all recursive calls
+            if res: return res
+            # go back, delete last direction
+            directions.pop()
+        return False
+
+    dfs_recursive(directions, start_state)
+    return directions
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""

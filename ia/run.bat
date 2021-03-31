@@ -1,1 +1,1 @@
-.\python2\App\python.exe pacman.py -l bigMaze
+.\python2\App\python.exe pacman.py -l mediumMaze -p SearchAgent
