@@ -157,18 +157,17 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     visited = {}
     visited[start_state] = True
     start_node = AstarNode(start_state, [])
-    open_list = [start_node]
+    nodes = [start_node]
 
-    while len(open_list) > 0:
-        current_node = open_list[0]
+    while len(nodes) > 0:
+        # select node that has smallest f
+        current_node = nodes[0]
         current_index = 0
-
-        # remove last nodes
-        for index, item in enumerate(open_list):
+        for index, item in enumerate(nodes):
             if item.f < current_node.f:
                 current_node = item
                 current_index = index
-        open_list.pop(current_index)
+        nodes.pop(current_index) # remove selected node from list
 
         # the goal state is reached
         if problem.isGoalState(current_node.state):
@@ -181,18 +180,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             # ignore if we've already visited this node
             if new_state in visited: continue
 
+            # make new node and add it to list of nodes
             new_node = AstarNode(new_state, current_node.directions)
             new_node.directions.append(direction)
             new_node.g = current_node.g + cost
-            new_node.h = nullHeuristic(new_state, problem)
+            new_node.h = heuristic(new_state, problem)
             new_node.f = new_node.g + new_node.h
-
-            for open_node in open_list:
-                if new_node.g > open_node.g:
-                    continue
-
             visited[new_state] = True
-            open_list.append(new_node)
+            nodes.append(new_node)
 
     # if there is no solution
     return []
