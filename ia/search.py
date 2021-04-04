@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from collections import deque
 
 class SearchProblem:
     """
@@ -73,20 +74,7 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    """
-    "*** YOUR CODE HERE ***"
+    """Search the deepest nodes in the search tree first."""
     directions = []
     start_state = problem.getStartState()
     visited = {}
@@ -97,14 +85,13 @@ def depthFirstSearch(problem):
         # mark that we have visted this place
         visited[state] = True
         # work with child nodes
-        successors = problem.getSuccessors(state)
-        for s in successors:
-            new_state, direction, cost = s
-            if new_state in visited: continue
+        for s in problem.getSuccessors(state):
+            next_state, direction, cost = s
+            if next_state in visited: continue
             # remember the direction
             directions.append(direction)
             # recursive call
-            res = dfs_recursive(directions, new_state)
+            res = dfs_recursive(directions, next_state)
             # good way, end all recursive calls
             if res: return res
             # go back, delete last direction
@@ -116,25 +103,99 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start_state = problem.getStartState()
+    # q hold elements having this form: ( state, directions_array )
+    # for example: ( (1,2) , [ 'West', 'South',... ] )
+    q = deque((s[0], [s[1]]) for s in problem.getSuccessors(start_state))
+    visited = {}
+    visited[start_state] = True
+
+    while len(q) > 0:
+        state, directions = q.popleft()
+        if problem.isGoalState(state):
+            # exit if the goal is reached
+            return directions
+        # find and enqueue child nodes
+        for s in problem.getSuccessors(state):
+            next_state, direction, cost = s
+            if next_state not in visited:
+                visited[next_state] = True
+                new_directions = [d for d in directions] # copy array
+                new_directions.append(direction)
+                q.append((next_state, new_directions))
+    
+    # if there is no solution
+    return []
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+import math
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
-    return 0
+    x, y = state
+    gx, gy = problem.goal
+    return math.sqrt((x - gx) ** 2 + (y - gy) ** 2)
+
+class AstarNode:
+    def __init__(self, state, directions):
+        self.state = state
+        self.g = 0
+        self.h = 0
+        self.f = 0
+        self.directions = [d for d in directions] # copy array
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start_state = problem.getStartState()
+    visited = {}
+    visited[start_state] = True
+    start_node = AstarNode(start_state, [])
+    open_list = [start_node]
+
+    while len(open_list) > 0:
+        current_node = open_list[0]
+        current_index = 0
+
+        # remove last nodes
+        for index, item in enumerate(open_list):
+            if item.f < current_node.f:
+                current_node = item
+                current_index = index
+        open_list.pop(current_index)
+
+        # the goal state is reached
+        if problem.isGoalState(current_node.state):
+            return current_node.directions
+
+        # work with child nodes
+        for s in problem.getSuccessors(current_node.state):
+            new_state, direction, cost = s
+
+            # ignore if we've already visited this node
+            if new_state in visited: continue
+
+            new_node = AstarNode(new_state, current_node.directions)
+            new_node.directions.append(direction)
+            new_node.g = current_node.g + cost
+            new_node.h = nullHeuristic(new_state, problem)
+            new_node.f = new_node.g + new_node.h
+
+            for open_node in open_list:
+                if new_node.g > open_node.g:
+                    continue
+
+            visited[new_state] = True
+            open_list.append(new_node)
+
+    # if there is no solution
+    return []
 
 
 # Abbreviations

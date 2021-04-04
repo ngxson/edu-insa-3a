@@ -1,1 +1,1 @@
-.\python2\App\python.exe pacman.py -l mediumMaze -p SearchAgent
+.\python2\App\python.exe pacman.py -l mediumMaze -z 0.5 -p SearchAgent -a fn=dfs
