@@ -1,0 +1,1 @@
+.\python2\App\python.exe pacman.py -l bigMaze -z 0.5 -p SearchAgent -a fn=astar
